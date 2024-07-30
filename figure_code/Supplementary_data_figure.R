@@ -2,7 +2,7 @@
 library(tidyverse)
 library(multipanelfigure)
 
-setwd("Bat_flu_modelling")
+setwd("Bat_flu_model")
 
 
 flu_data<-read.csv("raw_data/bat_final_unique_MG_day.csv")
