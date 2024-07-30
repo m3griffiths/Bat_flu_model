@@ -1,0 +1,286 @@
+model{
+  
+  
+# SEIRS defining the system
+
+for (t in 2:(t_max*30)){
+
+
+    beta_north[t]<-((1/(beta0_north/4*(1+beta1_north*sin((pi*x1_north)+2*t*pi/period1_north))*
+                   (1+beta2_north*sin((pi*x2_north)+2*t*pi/period2_north))+1)))
+    
+    beta_lima[t]<-((1/(beta0_lima/4*(1+beta1_lima*sin((pi*x1_lima)+2*t*pi/period1_lima))*
+                   (1+beta2_lima*sin((pi*x2_lima)+2*t*pi/period2_lima))+1)))
+    
+    beta_south[t]<-((1/(beta0_south/4*(1+beta1_south*sin((pi*x1_south)+2*t*pi/period1_north))*
+                   (1+beta2_south*sin((pi*x2_south)+2*t*pi/period2_south))+1)))
+
+
+#SEIRS NORTH
+    s_north[t] <- s_north[t-1] + 
+                 (1/r_bd)*(s_north[t-1]+e_north[t-1]+i_north[t-1]+r_north[t-1]) + 
+                 (1/gamma)*r_north[t-1] - 
+                 (1/(beta0_north/4*(1+beta1_north*sin((pi*x1_north)+2*t*pi/period1_north))*
+                  	(1+beta2_north*sin((pi*x2_north)+2*t*pi/period2_north))+1))*
+				s_north[t-1]*i_north[t-1] - 
+                 (1/r_bd)*s_north[t-1]
+                 
+    e_north[t] <- e_north[t-1] + 
+                 (1/(beta0_north/4*(1+beta1_north*sin((pi*x1_north)+2*t*pi/period1_north))*
+                  	(1+beta2_north*sin((pi*x2_north)+2*t*pi/period2_north))+1))*
+				s_north[t-1]*i_north[t-1] -
+                 (1/delta)*e_north[t-1] - 
+                 (1/r_bd)*e_north[t-1]
+                 
+    i_north[t] <- i_north[t-1] + 
+                 (1/delta)*e_north[t-1] - 
+                 (1/alpha)*i_north[t-1]- 
+                 (1/r_bd)*i_north[t-1]
+                 
+    r_north[t] <- r_north[t-1] + 
+                 (1/alpha)*i_north[t-1] - 
+                 (1/gamma)*r_north[t-1] - 
+                 (1/r_bd)*r_north[t-1]
+
+    ic_north[t] <- ic_north[t-1] +
+                 (1/delta)*e_north[t-1]                 
+
+
+#SEIRS SOUTH 
+    s_south[t] <- s_south[t-1] + 
+                 ((1/r_bd)*(s_south[t-1]+e_south[t-1]+i_south[t-1]+r_south[t-1]) + 
+                 (1/r_bd)*(s_south[t-1]+e_south[t-1]+i_south[t-1]+r_south[t-1])*(1-(s_south[t-1]+e_south[t-1]+i_south[t-1]+r_south[t-1]))) +
+                 (1/gamma)*r_south[t-1] - 
+                 (1/(beta0_south/4*(1+beta1_south*sin((pi*x1_south)+2*t*pi/period1_north))*
+                  	(1+beta2_south*sin((pi*x2_south)+2*t*pi/period2_south))+1))*
+				s_south[t-1]*i_south[t-1] - 
+                 (1/r_bd)*s_south[t-1]- 
+			s_south[t-1]*cull_int*cull_time[t-1]
+                 
+    e_south[t] <- e_south[t-1] + 
+                 (1/(beta0_south/4*(1+beta1_south*sin((pi*x1_south)+2*t*pi/period1_north))*
+                  	(1+beta2_south*sin((pi*x2_south)+2*t*pi/period2_south))+1))*
+				s_south[t-1]*i_south[t-1] -
+                 (1/delta)*e_south[t-1] - 
+                 (1/r_bd)*e_south[t-1]- 
+			e_south[t-1]*cull_int*cull_time[t-1]
+                 
+    i_south[t] <- i_south[t-1] + 
+                 (1/delta)*e_south[t-1] - 
+                 (1/alpha)*i_south[t-1]- 
+                 (1/r_bd)*i_south[t-1]- 
+			i_south[t-1]*cull_int*cull_time[t-1]
+                 
+    r_south[t] <- r_south[t-1] + 
+                 (1/alpha)*i_south[t-1] - 
+                 (1/gamma)*r_south[t-1] - 
+                 (1/r_bd)*r_south[t-1]- 
+			r_south[t-1]*cull_int*cull_time[t-1]
+
+    ic_south[t] <- ic_south[t-1] +
+                 (1/delta)*e_south[t-1]                
+
+
+#SEIRS lima 
+    s_lima[t] <- s_lima[t-1] + 
+                 (1/r_bd)*(s_lima[t-1]+e_lima[t-1]+i_lima[t-1]+r_lima[t-1]) + 
+                 (1/gamma)*r_lima[t-1] - 
+                 (1/(beta0_lima/4*(1+beta1_lima*sin((pi*x1_lima)+2*t*pi/period1_lima))*
+                  	(1+beta2_lima*sin((pi*x2_lima)+2*t*pi/period2_lima))+1))*
+				s_lima[t-1]*i_lima[t-1] - 
+                 (1/r_bd)*s_lima[t-1]
+                 
+    e_lima[t] <- e_lima[t-1] + 
+                 (1/(beta0_lima/4*(1+beta1_lima*sin((pi*x1_lima)+2*t*pi/period1_lima))*
+                  	(1+beta2_lima*sin((pi*x2_lima)+2*t*pi/period2_lima))+1))*
+				s_lima[t-1]*i_lima[t-1] -
+                 (1/delta)*e_lima[t-1] - 
+                 (1/r_bd)*e_lima[t-1]
+                 
+    i_lima[t] <- i_lima[t-1] + 
+                 (1/delta)*e_lima[t-1] - 
+                 (1/alpha)*i_lima[t-1]- 
+                 (1/r_bd)*i_lima[t-1]
+                 
+    r_lima[t] <- r_lima[t-1] + 
+                 (1/alpha)*i_lima[t-1] - 
+                 (1/gamma)*r_lima[t-1] - 
+                 (1/r_bd)*r_lima[t-1]
+
+    ic_lima[t] <- ic_lima[t-1] +
+                 (1/delta)*e_lima[t-1]                     
+
+
+
+}#end time loop
+  
+for(t in 1:t_max){
+In_m_north[t] <- ic_north[t*30]-ic_north[(30*(t-1))+1]
+In_m_south[t] <- ((ic_south[t*30])-(ic_south[(30*(t-1))+1]))/(s_south[(30*t)]+e_south[(30*t)]+i_south[(30*t)]+r_south[(30*t)])
+In_m_lima[t]  <- ic_lima[t*30]-ic_lima[(30*(t-1))+1]
+}  
+
+
+
+# Initial conditions
+
+
+s_north[1] <- 1 - i_north[1] - r_north[1] - e_north[1]
+e_north[1] <- E0_north
+i_north[1] <- I0_north
+r_north[1] <- R0_north
+ic_north[1] <- 0
+
+s_south[1] <- 1 - i_south[1] - r_south[1] - e_south[1]
+e_south[1] <- E0_south
+i_south[1] <- I0_south
+r_south[1] <- R0_south
+ic_south[1] <- 0
+
+s_lima[1] <- 1 - i_lima[1] - r_lima[1] - e_lima[1]
+e_lima[1] <- E0_lima
+i_lima[1] <- I0_lima
+r_lima[1] <- R0_lima
+ic_lima[1] <- 0
+  
+  
+#LIKELIHOOD
+#defines the likelihood of detecting seropositivity 
+
+
+for(t in 1:t_max){
+
+           p_north[t]<- mean(r_north[(30*(t-1)+1):(30*t)]/ (s_north[(30*(t-1)+1):(30*t)]+e_north[(30*(t-1)+1):(30*t)]+i_north[(30*(t-1)+1):(30*t)]+r_north[(30*(t-1)+1):(30*t)]) )
+   sample_y_north[t] ~ dbin(p_north[t],sample_n_north[t])
+
+          p_south[t]<- mean(r_south[(30*(t-1)+1):(30*t)]/ (s_south[(30*(t-1)+1):(30*t)]+e_south[(30*(t-1)+1):(30*t)]+i_south[(30*(t-1)+1):(30*t)]+r_south[(30*(t-1)+1):(30*t)]))
+   sample_y_south[t] ~ dbin(p_south[t],sample_n_south[t])
+
+          p_lima[t]<- mean(r_lima[(30*(t-1)+1):(30*t)]/ (s_lima[(30*(t-1)+1):(30*t)]+e_lima[(30*(t-1)+1):(30*t)]+i_lima[(30*(t-1)+1):(30*t)]+r_lima[(30*(t-1)+1):(30*t)]))
+   sample_y_lima[t] ~ dbin(p_lima[t],sample_n_lima[t])
+
+       
+}
+
+
+
+#likelihood for metagenomic data
+
+p_met_north <- mean(i_north[(1:(t_max*30))])
+p_met_south <- mean(i_south[(1:(t_max*30))])
+p_met_lima  <- mean(i_lima[(1:(t_max*30))])
+
+
+met_north_y ~ dbin(p_met_north, met_north_n)
+met_south_y ~ dbin(p_met_south, met_south_n)
+met_lima_y  ~ dbin(p_met_lima,  met_lima_n)
+
+
+
+# PRIORS
+
+
+# SEIR PARAMETERS
+
+#Recovery rate
+mu.alpha<- 7
+var.alpha<- 14
+a.alpha<- (mu.alpha^2)/var.alpha
+b.alpha<- mu.alpha/var.alpha
+alpha ~ dgamma(a.alpha,b.alpha)T(3,18)
+
+#Incubation rate
+mu.delta<- 3
+var.delta<- 1.5
+a.delta<- (mu.delta^2)/var.delta
+b.delta<- mu.delta/var.delta
+delta ~ dgamma(a.delta,b.delta)T(1,10)
+
+#Immunity loss rate
+mu.gamma<- 365*1
+var.gamma<- 10000
+a.gamma<- (mu.gamma^2)/var.gamma
+b.gamma<- mu.gamma/var.gamma
+gamma ~ dgamma(a.gamma,b.gamma)
+
+
+#Culling parameter
+cull_int ~ dgamma(1.5,400)
+
+#PERIODICITY
+
+mu.betaP<- 0.5
+var.betaP<- 0.04
+a.betaP<- (mu.betaP/var.betaP)*(mu.betaP-(mu.betaP^2)-var.betaP)
+b.betaP<- ((1-mu.betaP)/var.betaP)*(mu.betaP-(mu.betaP^2)-var.betaP)
+
+mu.b0<- 8
+var.b0<- 8
+a.b0<- (mu.b0^2)/var.b0
+b.b0<- mu.b0/var.b0
+
+beta0_north ~ dgamma(a.b0,b.b0)
+beta0_south ~ dgamma(a.b0,b.b0)
+beta0_lima ~ dgamma(a.b0,b.b0)
+
+
+#SHORT-TERM PERIODICITY
+
+beta1_north ~ dbeta(2,3)
+beta1_south ~ dbeta(1.5,3) 
+beta1_lima ~ dbeta(1.5,3) 
+
+
+
+#LONG-TERM PERIODICITY 
+
+beta2_north ~ dbeta(a.betaP,b.betaP) #long-term periodicity
+period2_north ~ dunif(365*3.5,365*5)
+
+beta2_south ~ dbeta(a.betaP,b.betaP) #long-term periodicity
+period2_south ~ dunif(365*3.5,365*5)
+
+beta2_lima ~ dbeta(a.betaP,b.betaP) #long-term periodicity
+period2_lima ~ dunif(365*3.5,365*5)
+
+
+x1_north ~ dunif(-1,1)
+x2_north ~ dunif(0,2)
+
+x1_lima ~ dunif(-1,1)
+x2_lima ~ dunif(0,2)
+
+x1_south ~ dunif(0,2)
+x2_south ~ dunif(0,2)
+
+
+
+#BASELINES
+
+mu.baseR<- 0.5
+var.baseR<- 0.01
+a.baseR<- (mu.baseR/var.baseR)*(mu.baseR-(mu.baseR^2)-var.baseR)
+b.baseR<- ((1-mu.baseR)/var.baseR)*(mu.baseR-(mu.baseR^2)-var.baseR)
+
+mu.baseI<- 0.1
+var.baseI<- 0.01
+a.baseI<- (mu.baseI/var.baseI)*(mu.baseI-(mu.baseI^2)-var.baseI)
+b.baseI<- ((1-mu.baseI)/var.baseI)*(mu.baseI-(mu.baseI^2)-var.baseI)
+
+
+ 
+R0_north ~ dbeta(a.baseR,b.baseR)
+I0_north ~ dbeta(a.baseI,b.baseI)T(0,1-R0_north)
+E0_north ~ dbeta(a.baseI,b.baseI)T(0,1-R0_north-I0_north)
+
+R0_south ~ dbeta(a.baseR,b.baseR)
+I0_south ~ dbeta(a.baseI,b.baseI)T(0,1-R0_south)
+E0_south ~ dbeta(a.baseI,b.baseI)T(0,1-R0_south-I0_south)
+
+R0_lima ~ dbeta(a.baseR,b.baseR)
+I0_lima ~ dbeta(a.baseI,b.baseI)T(0,1-R0_lima)
+E0_lima ~ dbeta(a.baseI,b.baseI)T(0,1-R0_lima-I0_lima)
+ 
+
+
+} #end model
