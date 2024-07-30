@@ -41,7 +41,7 @@ load("All_model_outputs_20240531.RData")
 
 #setwd
 
-setwd("Bat_flu_modelling")
+setwd("Bat_flu_model")
 
 #register_google(key = "xxx", write = TRUE)
 
