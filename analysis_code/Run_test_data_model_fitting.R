@@ -13,7 +13,7 @@ rm(list=ls())
   library(jagsUI)
 }
 
-setwd("Bat_flu_modelling")
+setwd("Bat_flu_model")
 
 #load data
 flu_data<-read.csv("raw_data/bat_final_unique_MG_day.csv")
