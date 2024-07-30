@@ -8,7 +8,7 @@ library(dplyr)
 #get test simulated data
 
 #setwd
-setwd("Bat_flu_modelling/raw_data")
+setwd("Bat_flu_model/raw_data")
 
 #load data
 flu_data<-read.csv("bat_final_unique_MG_day.csv")
