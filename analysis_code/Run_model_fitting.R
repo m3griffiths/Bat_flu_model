@@ -1,7 +1,7 @@
 #This code collates the serology data and uses this data to run model fitting using JAGS.
 
 #set working directory - modify as appropriate to your system
-setwd("Bat_flu_modelling")
+setwd("Bat_flu_model")
 
 #clear the environment
 rm(list=ls())
