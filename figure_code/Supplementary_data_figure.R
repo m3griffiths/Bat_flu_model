@@ -1,12 +1,9 @@
 
 library(tidyverse)
 library(multipanelfigure)
-
-setwd("Bat_flu_modelling")
-
+library(ggpubr)
 
 flu_data<-read.csv("raw_data/bat_final_unique_MG_day.csv")
-
 
 #######################################################################################################################################
 
@@ -72,7 +69,7 @@ lima1_multi<-
 ggplot(data = filter(bats_flu_multi, MetaRegion=="Lima" & Id <= 4500), aes(x=Date_continuous, y=Id))+
   geom_line(aes(col=as.factor(state)))+
   geom_point(aes(shape=as.factor(Serol), col=as.factor(state)), size=1.5, fill="white", stroke=1)+theme_bw()+
-  labs(x="Time (years)", y= "Bat ID", shape="Seropositivity", title="Coast")+
+  labs(x="Time (years)", y= "Bat ID", shape="Seropositivity", title="Central")+
   scale_shape_manual(values=c(4,19), labels=c("Seronegative (-)", "Seropositive (+)"))+
   scale_color_manual(values = c("grey80", "royalblue", "red", "orange"), labels=c("Unchanged", "Antibody waning", "Seroconversion", "Other"))+
   scale_x_continuous(breaks=seq(2008,2018,2))+theme(legend.position = "none", axis.text.y = element_text(size=5))
@@ -91,7 +88,7 @@ lima2_multi<-
 legend1_plot<-ggplot(data = filter(bats_flu_multi, MetaRegion=="Lima"), aes(x=Date_continuous, y=Id))+
   geom_line(aes())+
   geom_point(aes(shape=as.factor(Serol)), size=1.5, fill="white", stroke=1)+theme_bw()+
-  labs(x="Time (years)", y= "Bat ID", shape="Seropositivity", title="Coast")+
+  labs(x="Time (years)", y= "Bat ID", shape="Seropositivity", title="Central")+
   scale_shape_manual(values=c(4,19), labels=c("Seronegative (-)", "Seropositive (+)"))+
   scale_x_continuous(breaks=seq(2008,2018,2))+theme(legend.position = "left", axis.text.y = element_text(size=5))
 
@@ -99,7 +96,7 @@ legend1_plot<-ggplot(data = filter(bats_flu_multi, MetaRegion=="Lima"), aes(x=Da
 legend2_plot<-ggplot(data = filter(bats_flu_multi, MetaRegion=="Lima"), aes(x=Date_continuous, y=Id))+
   geom_line(aes(col=as.factor(state)))+
   geom_point(aes( col=as.factor(state)), size=1.5, fill="white", stroke=1)+theme_bw()+
-  labs(x="Time (years)", y= "Bat ID", shape="Seropositivity", title="Coast", colour="Change in serostatus")+
+  labs(x="Time (years)", y= "Bat ID", shape="Seropositivity", title="Central", colour="Change in serostatus")+
   scale_color_manual(values = c("grey80", "royalblue", "red", "orange"), labels=c("Serostatus Unchanged", "Antibody waning (1 -> 0)", "Seroconversion (0 -> 1)", "Combination"))+
   scale_x_continuous(breaks=seq(2008,2018,2))+theme(legend.position = "left", axis.text.y = element_text(size=5))
 

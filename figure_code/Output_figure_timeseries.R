@@ -39,9 +39,6 @@ load("All_model_outputs_20240531.RData")
   library(ggspatial)
 }
 
-#setwd
-
-setwd("Bat_flu_modelling")
 
 #register_google(key = "xxx", write = TRUE)
 
@@ -107,8 +104,8 @@ north_R<-ggplot()+
   geom_line(data=time_series_data_north, aes(x=time, y=r.mean),col="#99ddff", size=1)+
   geom_ribbon(data=time_series_data_north, aes(x=time, ymax=r.upp, ymin=r.lwr), fill="#99ddff", alpha=0.3 )+
   theme_bw()+labs(x="Time (years)", y="Proportion \nSeropositive")+
-  geom_point(data=data_points_north, aes(x=time, y=PointEst, col=inside_q_north), size=2)+
-  geom_errorbar(data=data_points_north, aes(x=time, ymax=Upper, ymin=Lower, col=inside_q_north), size=0.75)+
+  geom_point(data=data_points_north, aes(x=time, y=PointEst, col=inside_q_north), size=1)+
+  geom_errorbar(data=data_points_north, aes(x=time, ymax=Upper, ymin=Lower, col=inside_q_north))+
   scale_x_continuous(limits=c(2007.2,2019), breaks=seq(2008,2018,2))+
   scale_y_continuous( breaks=seq(0,1,0.2))+
   scale_colour_manual(values=c("red", "black"))+theme(legend.position = "none")+
@@ -123,8 +120,8 @@ lima_R<-ggplot()+
   geom_line(data=time_series_data_lima, aes(x=time, y=r.mean),col="#44BB99", size=1)+
   geom_ribbon(data=time_series_data_lima, aes(x=time, ymax=r.upp, ymin=r.lwr), fill="#44BB99", alpha=0.2 )+
   theme_bw()+labs(x="Time (years)", y="Proportion \nSeropositive")+
-  geom_point(data=data_points_lima, aes(x=time, y=PointEst, col=inside_q_lima), size=2)+
-  geom_errorbar(data=data_points_lima, aes(x=time, ymax=Upper, ymin=Lower, col=inside_q_lima), size=0.75)+
+  geom_point(data=data_points_lima, aes(x=time, y=PointEst, col=inside_q_lima), size=1)+
+  geom_errorbar(data=data_points_lima, aes(x=time, ymax=Upper, ymin=Lower, col=inside_q_lima))+
   scale_x_continuous(limits=c(2007.2,2019), breaks=seq(2008,2018,2))+
   scale_y_continuous( breaks=seq(0,1,0.2))+
   scale_colour_manual(values=c("black", "red"))+theme(legend.position = "none")+
@@ -140,8 +137,8 @@ south_R<-ggplot()+
   geom_line(data=r_p_plot, aes(x=(time/360)+2007, y=mean),col="#ee8866", size=1)+
   geom_ribbon(data=r_p_plot, aes(x=(time/360)+2007, ymax=q2.5, ymin=q97.5), fill="#ee8866", alpha=0.2 )+
   theme_bw()+labs(x="Time (years)", y="Proportion \nSeropositive")+
-  geom_point(data=data_points_south, aes(x=time, y=PointEst, col=inside_q_south), size=2)+
-  geom_errorbar(data=data_points_south, aes(x=time, ymax=Upper, ymin=Lower, col=inside_q_south), size=0.75)+
+  geom_point(data=data_points_south, aes(x=time, y=PointEst, col=inside_q_south), size=1)+
+  geom_errorbar(data=data_points_south, aes(x=time, ymax=Upper, ymin=Lower, col=inside_q_south))+
   scale_x_continuous(limits=c(2007.2,2019), breaks=seq(2008,2018,2))+
   scale_colour_manual(values=c("black", "red"))+theme(legend.position = "none")+
   coord_cartesian(ylim = c(0, 1), clip="off")+
@@ -331,7 +328,7 @@ longitudinal_summary
 
 long_plot<- ggplot()+
   geom_bar(data=longitudinal_summary, aes(x=State, y=Count, fill=factor(MR, levels = c("North", "Central", "South"))), stat="identity")+
-  theme_bw()+scale_fill_manual(values=c( "#0077BB", "#44BB99","#EE8866"), labels=c("North", "Central", "South"))+
+  theme_bw()+scale_fill_manual(values=c( "#0077BB", "#44BB99","#EE8866"), labels=c("N", "C", "S"))+
   labs(fill=" ", x="Transition", y="Longitudinal sample pairs")+theme(legend.position = "top")
 
 long_plot 
@@ -352,7 +349,7 @@ sites<-as.vector(unique(newd$Site))
 plot_sites<-filter(site_coords, Code %in% sites)
 plot_sites$MR<-c("N", "N", "N", "N", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "S", "N", "N", "N", "N", "S", "S", "L", "L", "L", "L")
 
-PER_G <- gadm(country="PE", level=1, path="C:/Users/mg321b/OneDrive - University of Glasgow/RA_projects/Bat_influenza/Existing_data")
+PER_G <- gadm(country="PE", level=1, path="path_to_your_map_data")
 PERU_G_df <-sf::st_as_sf(PER_G, region = "NAME_1")
 
 PERU_G_df_South <- filter((PERU_G_df), NAME_1 %in% c("Apurímac", "Ayacucho", "Cusco"))
@@ -382,11 +379,12 @@ library(multipanelfigure)
 
 
 
-fig_1_plot<-multi_panel_figure(width = c(112,8,50), height=c(70,45,25,70), unit="mm", row_spacing = 0, column_spacing = c(5,5,0,0))
+fig_1_plot<-multi_panel_figure(width = c(102,8,45), height=c(58,40,20,58), unit="mm", row_spacing = 0, column_spacing = c(0,5,0,0))
 fig_1_plot
 
 
-fill_panel(fig_1_plot, north_R, column = 1, row=1, label = "A")%>%
+fig_1<-
+  fill_panel(fig_1_plot, north_R, column = 1, row=1, label = "A")%>%
   fill_panel(lima_R, column=1, row=c(2:3))%>%
   fill_panel(south_R, column=c(1:2), row=4)%>%
   fill_panel(map, column=c(2:3), row=c(1:2))%>%
@@ -501,7 +499,8 @@ gamma_plot
 figure_2_plot<-multi_panel_figure(width=c(90,70), height=c(45,45), unit = "mm")
 figure_2_plot
 
-fill_panel(figure_2_plot, MR3_all_alpha_delta, column=1, row=1)%>%
+fig_2<-
+  fill_panel(figure_2_plot, MR3_all_alpha_delta, column=1, row=1)%>%
   fill_panel(MR3_all_gamma, column=1, row=2)%>%
   fill_panel(gamma_plot, column=2, row=c(1:2))
 
@@ -603,10 +602,10 @@ peak_times_plot
 
 
 #Plot parts A, B, and C together
-fig_3_plot<-multi_panel_figure(width = c(110,60), height=c(50,50), unit="mm")
+fig_3_plot<-multi_panel_figure(width = c(100,60), height=c(50,50), unit="mm")
 fig_3_plot
 
-
+fig_3<-
 fill_panel(fig_3_plot, all_beta, column = 1, row=1)%>%
   fill_panel(all_I, column=1, row=2)%>%
   fill_panel(peak_times_plot, column=2, row=c(1,2))
@@ -660,9 +659,9 @@ Pop_size<-
 
 
 
-fig_4_plot<-multi_panel_figure(width = c(60,110), height=c(70,1), unit="mm")
+fig_4_plot<-multi_panel_figure(width = c(60,100), height=c(70,1), unit="mm", row_spacing = 0)
 
-
+fig_4<-
 fill_panel(fig_4_plot, cull_scale_plot, row=1, column = 1)%>%
   fill_panel(Pop_size, row=1, column=2)
 

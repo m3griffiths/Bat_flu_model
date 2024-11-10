@@ -7,13 +7,10 @@ library(dplyr)
 
 #get test simulated data
 
-#setwd
-setwd("Bat_flu_modelling/raw_data")
-
 #load data
-flu_data<-read.csv("bat_final_unique_MG_day.csv")
-bats_flu_od<-read.csv("bat_final_unique_MG_day.csv")
-bat_cull <- read.csv("Bat_cull.csv", header=T)
+flu_data<-read.csv("raw_data/bat_final_unique_MG_day.csv")
+bats_flu_od<-read.csv("raw_data/bat_final_unique_MG_day.csv")
+bat_cull <- read.csv("raw_data/Bat_cull.csv", header=T)
 
 culling_vector<-c(rep(0, times=144))
 
@@ -382,70 +379,124 @@ ggplot()+
 
 
 #explore the proportions of extinctions in the stochastic model at different population sizes
-#population sizes from 1000 to 10,000 
 
-stoch_sim<-function(params, sims, low, high, stepby){
+stoch_sim<-function(MR, sims, low, high, stepby){
   
-
-population_size_test<-data.frame( 
-           PopSize=rep(seq(from=low, to=high, by=stepby)),
-           Count=NA)
- n<-1  
- 
- for (pop in seq(from=low, to=high, by=stepby)){
-   
-   count<-c()
-   total_pop<-pop
-   
-   init.values=c(S=round(total_pop*0.295), E=round(total_pop*0.005), I=round(total_pop*0.005), R1=round(total_pop*0.495), R2=round(total_pop*0.20)
-   ) 
-   params2<-params
-   params2["beta0"]<-params["beta0"]*total_pop
-   
-   for (x1 in c(1:sims)){
-     
-     r<-data.frame(ssa.sptime(ssa.adaptivetau(init.values = init.values,transitions = transitions_SEIR,
-                                              SIRrateF_SEIR, params = params2,tf=time_run,
-                                              tl.params =  list(maxtau = 1,extraChecks = F),
-                                              set.seed(x1)),
-                              time.steps = seq(0,time_run,30))); # set the time steps that will be output
-     
-     count<-append(count, tail(r$I,1))
-     
-   }
-   
-   Count<-(sims-length(count[count==0]))
-   
-   population_size_test$Count[n]<-Count/sims
-   
-   n<-n+1
-   
- }
- 
- return(population_size_test)
+  
+  population_size_test<-data.frame( 
+    PopSize=rep(seq(from=low, to=high, by=stepby)),
+    Count=NA)
+  n<-1  
+  
+  for (pop in seq(from=low, to=high, by=stepby)){
+    
+    count<-c()
+    total_pop<-pop
+    
+    init.values=c(S=round(total_pop*0.295), E=round(total_pop*0.005), I=round(total_pop*0.005), R1=round(total_pop*0.495), R2=round(total_pop*0.20)
+    ) 
+    
+    for (x1 in c(1:sims)){
+      
+      if (MR == "North"){
+        params<-c(b=365*3.5,
+                  D_inf=sample(prod.mcmc_A_base_long_met$sims.list$alpha, size=1)+0.25,
+                  D_inc=sample(prod.mcmc_A_base_long_met$sims.list$delta, size=1),
+                  D_imm=sample(prod.mcmc_A_base_long_met$sims.list$gamma, size=1), 
+                  beta0=(sample(prod.mcmc_A_base_long_met$sims.list$beta0_north, size=1)-0.5)*total_pop,
+                  beta1=sample(prod.mcmc_A_base_long_met$sims.list$beta1_north, size=1),
+                  beta2=sample(prod.mcmc_A_base_long_met$sims.list$beta2_north, size=1),
+                  period1=365,
+                  period2=sample(prod.mcmc_A_base_long_met$sims.list$period2_north, size=1),
+                  x1=sample(prod.mcmc_A_base_long_met$sims.list$x1_north, size=1),
+                  x2=sample(prod.mcmc_A_base_long_met$sims.list$x2_north, size=1),
+                  phi=0,
+                  theta=0
+                  # input parameters
+                  
+        )   
+      }else if (MR == "South"){
+        params<-c(b=365*3.5,
+                  D_inf=sample(prod.mcmc_A_base_long_met$sims.list$alpha, size=1)+0.25,
+                  D_inc=sample(prod.mcmc_A_base_long_met$sims.list$delta, size=1),
+                  D_imm=sample(prod.mcmc_A_base_long_met$sims.list$gamma, size=1), 
+                  beta0=(sample(prod.mcmc_A_base_long_met$sims.list$beta0_south, size=1)-0.5)*total_pop,
+                  beta1=sample(prod.mcmc_A_base_long_met$sims.list$beta1_south, size=1),
+                  beta2=sample(prod.mcmc_A_base_long_met$sims.list$beta2_south, size=1),
+                  period1=365,
+                  period2=sample(prod.mcmc_A_base_long_met$sims.list$period2_south, size=1),
+                  x1=sample(prod.mcmc_A_base_long_met$sims.list$x1_south, size=1),
+                  x2=sample(prod.mcmc_A_base_long_met$sims.list$x2_south, size=1),
+                  phi=0,
+                  theta=0
+                  # input parameters
+                  
+        )   
+      }else if (MR == "Lima"){
+        params<-c(b=365*3.5,
+                  D_inf=sample(prod.mcmc_A_base_long_met$sims.list$alpha, size=1)+0.25,
+                  D_inc=sample(prod.mcmc_A_base_long_met$sims.list$delta, size=1),
+                  D_imm=sample(prod.mcmc_A_base_long_met$sims.list$gamma, size=1), 
+                  beta0=(sample(prod.mcmc_A_base_long_met$sims.list$beta0_lima, size=1)-0.5)*total_pop,
+                  beta1=sample(prod.mcmc_A_base_long_met$sims.list$beta1_lima, size=1),
+                  beta2=sample(prod.mcmc_A_base_long_met$sims.list$beta2_lima, size=1),
+                  period1=365,
+                  period2=sample(prod.mcmc_A_base_long_met$sims.list$period2_lima, size=1),
+                  x1=sample(prod.mcmc_A_base_long_met$sims.list$x1_lima, size=1),
+                  x2=sample(prod.mcmc_A_base_long_met$sims.list$x2_lima, size=1),
+                  phi=0,
+                  theta=0
+                  # input parameters
+                  
+        )   
+      }
+      
+      r<-data.frame(ssa.sptime(ssa.adaptivetau(init.values = init.values,transitions = transitions_SEIR,
+                                               SIRrateF_SEIR, params = params,tf=time_run,
+                                               tl.params =  list(maxtau = 1,extraChecks = F),
+                                               set.seed(x1)),
+                               time.steps = seq(0,time_run,30))); # set the time steps that will be output
+      
+      count<-append(count, tail(r$I,1))
+      
+    }
+    
+    Count<-(sims-length(count[count==0]))
+    
+    population_size_test$Count[n]<-Count/sims
+    
+    n<-n+1
+    
+  }
+  
+  return(population_size_test)
   
 }
 
+start_time<-Sys.time()
 
-stoch_sim_lima<-stoch_sim(lima_params, 250, 2500, 150000, 2500)
-stoch_sim_north<-stoch_sim(north_params, 250, 2500, 150000, 2500)
-stoch_sim_south<-stoch_sim(south_params, 250, 2500, 150000, 2500)
+stoch_sim_lima<-stoch_sim(MR="Lima", 250, 2500, 250000, 2500)
+stoch_sim_north<-stoch_sim(MR="North", 250, 2500, 250000, 2500)
+stoch_sim_south<-stoch_sim(MR="South", 250, 2500, 250000, 2500)
 
+end_time<-Sys.time()
+print(end_time-start_time)
 
-#save.image("stochastic_model_pop_size_output_20240322.RData")
+load("model_output_data/stochastic_model_pop_size_output_20241021.RData")
 
-#load("stochastic_model_pop_size_output_20240322.RData")
-
+stoch_sim_lima<-rbind(data.frame(PopSize=0, Count=0.00), stoch_sim_lima)
+stoch_sim_north<-rbind(data.frame(PopSize=0, Count=0.00), stoch_sim_north)
+stoch_sim_south<-rbind(data.frame(PopSize=0, Count=0.00), stoch_sim_south)
 
 ggplot()+
-  geom_point(data=stoch_sim_lima_all, aes(x=PopSize/1000, y=Count), col="#44BB99")+
-  geom_smooth(data=stoch_sim_lima_all, aes(x=PopSize/1000, y=Count), method='lm', formula=y~poly(x,24), se=FALSE, col="#44BB99", linewidth=1)+
-  geom_point(data=stoch_sim_north_all, aes(x=PopSize/1000, y=Count), col="#99DDFF")+
-  geom_smooth(data=stoch_sim_north_all, aes(x=PopSize/1000, y=Count), method='lm', formula=y~poly(x,25), se=FALSE, col="#99DDFF", linewidth=1)+
-  geom_point(data=stoch_sim_south_all, aes(x=PopSize/1000, y=Count), col="#EE8866")+
-  geom_smooth(data=stoch_sim_south_all, aes(x=PopSize/1000, y=Count), method='lm', formula=y~poly(x,9), se=FALSE, col="#EE8866", linewidth=1)+
+  geom_point(data=stoch_sim_lima, aes(x=PopSize/1000, y=Count), col="#44BB99")+
+  #geom_smooth(data=stoch_sim_lima, aes(x=PopSize/1000, y=Count), method='lm', formula=y~poly(x,15), se=FALSE, col="#44BB99", linewidth=1)+
+  geom_point(data=stoch_sim_north, aes(x=PopSize/1000, y=Count), col="#99DDFF")+
+  #geom_smooth(data=stoch_sim_north, aes(x=PopSize/1000, y=Count), method='lm', formula=y~poly(x,14), se=FALSE, col="#99DDFF", linewidth=1)+
+  geom_point(data=stoch_sim_south, aes(x=PopSize/1000, y=Count), col="#EE8866")+
+  #geom_smooth(data=stoch_sim_south, aes(x=PopSize/1000, y=Count), method='lm', formula=y~poly(x,14), se=FALSE, col="#EE8866", linewidth=1)+
   theme_bw()+ylim(-0.01,1.01)+
-  #geom_hline(aes(yintercept=0.90), linetype="dashed")+
-  geom_hline(aes(yintercept=0.95), linetype="dashed")+
+  geom_hline(aes(yintercept=0.90), linetype="dashed")+
   labs(x="Population size (K)", y="BIV survival rate")
+
 

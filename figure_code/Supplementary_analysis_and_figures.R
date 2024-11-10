@@ -10,14 +10,10 @@ rm(list=ls())
   library(ggpubr)
 }
 
-
 #######################################################################################################################################
-
-
 
 #load data - requires download from repository at https://zenodo.org/records/12820416
 load("All_model_outputs_20240531.RData")
-
 
 #-------------------------------------------------------------------------------
 #Plot posterior distributions for all parameters comparing between models with different data inclusions
