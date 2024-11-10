@@ -6,7 +6,7 @@ Code for the JAGS model fitting and subsequent model analysis and figure plottin
 ## Folder structure
 
 ```
-└─Bat_flu_modelling/
+└─Bat_flu_model/
    ├─analysis_code/............................JAGS scripts and R scripts needed to perform model fitting.
    │ 
    ├─figure_code/..............................R scripts to produce all main text and supplementary figures.
@@ -19,7 +19,7 @@ Code for the JAGS model fitting and subsequent model analysis and figure plottin
 
 ## Data
 
-Raw data needed to carry out the model fitting is contained within `Bat_flu_modelling/raw_data`. 
+Raw data needed to carry out the model fitting is contained within `Bat_flu_model/raw_data`. 
 
 - `bat_final_unique_MG_day.csv` contains the details of all bats (individuals labelled by `Id`)  tested by H18 ELISA, where `Serol` is the binary ELISA result.
 - `bat_cull` contains the dates at which bat culls took place and the number of bats recorded as culled at each time point.
